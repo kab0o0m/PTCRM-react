@@ -1,6 +1,6 @@
 import React from "react";
 import Navbar from "../Navbar/Navbar";
-import getTutors from "./getTutors";
+import getTutors from "./getTutors.jsx";
 import { useState, useEffect } from "react";
 
 const Tutors = () => {
@@ -77,7 +77,7 @@ const Tutors = () => {
                   <td className="py-3 px-6 text-left">{tutor.phone_number}</td>
                   <td className="py-3 px-6 text-left">Applications</td>
                   <td className="py-3 px-6 text-left">{tutor.remarks}</td>
-                  <td className="py-3 px-6 text-left">{tutor.profiles}</td>
+                  <td className="py-3 px-6 text-left"></td>
                   <td className="py-3 px-6 text-left">
                     {UTCtoSGT(tutor.created_date)}
                   </td>

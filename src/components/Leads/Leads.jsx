@@ -10,7 +10,7 @@ const Leads = () => {
   const [description, setDescription] = useState("");
   const [icon, setIcon] = useState("📄");
   const [isApplications, setIsApplications] = useState(false);
-  const [displayLead, setDisplayedLead] = useState({});
+  const [displayedLead, setDisplayedLead] = useState({});
 
   useEffect(() => {
     const fetchData = async () => {
@@ -41,7 +41,7 @@ const Leads = () => {
           },
         }
       );
-      console.log(response);
+      //console.log(response);
       const updatedLeads = leads.map((lead) => {
         if (lead.id === leadId) {
           return {
@@ -66,8 +66,8 @@ const Leads = () => {
   //Open to see applications
   const openApplications = (lead) => {
     setDisplayedLead(lead);
-
     setIsApplications(true);
+    //console.log(displayedLead)
   };
 
   //convert UTC to SGT time
@@ -88,6 +88,36 @@ const Leads = () => {
   const copyToClipboard = () => {
     navigator.clipboard.writeText(description);
   };
+
+
+  const countApplications = (applications) => {
+    console.log(applications);
+    const total = applications.length;
+    let newCount = 0;
+    let sent = 0;
+    let pending = 0;
+    
+    for (let tutor of applications) {
+        if (tutor.apply_status === "new") {
+            newCount++;
+        } else if (tutor.apply_status === "sent") {
+            sent++;
+        } else if (tutor.apply_status === "pending") {
+            pending++;
+        }
+    }
+
+    return (
+      <div>
+        <div className="">
+          <span>{total} Applications</span>
+        </div>
+        <span>{"("}{newCount} New,</span>
+        <span>{sent} Sent,</span>
+        <span>{pending} Pending{")"}</span>
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -168,18 +198,20 @@ const Leads = () => {
                   <td
                     className="py-3 px-6 text-left hover:underline hover:cursor-pointer"
                     onClick={() => seeLead(lead.description)}
+                    style={{ fontSize: "0.7rem" }}
                   >
                     {lead.code}
                   </td>
-                  <td className="py-3 px-6 text-left">{lead.client_name}</td>
-                  <td className="py-3 px-6 text-left">{lead.client_number}</td>
-                  <td className="py-3 px-6 text-left">
+                  <td className="py-3 px-6 text-left" style={{ fontSize: "0.7rem" }}>{lead.client_name}</td>
+                  <td className="py-3 px-6 text-left" style={{ fontSize: "0.7rem" }}>{lead.client_number}</td>
+                  <td className="py-3 px-6 text-left" style={{ fontSize: "0.7rem" }}>
                     <select
                       value={lead.status}
                       onChange={(e) =>
                         handleChangeStatus(lead.id, e.target.value)
                       }
                       className="border border-gray-300 rounded px-2 py-1"
+                      style={{ fontSize: "0.7rem" }}
                     >
                       <option value="new_case">New Case</option>
                       <option value="tutors_sent">Tutors Sent</option>
@@ -208,40 +240,21 @@ const Leads = () => {
                     className="py-3 px-6 text-left hover:underline hover:cursor-pointer"
                     onClick={() => {
                       openApplications(lead);
-                      console.log(displayLead);
                     }}
+                    style={{ fontSize: "0.7rem" }}
                   >
-                    <div className="">
-                      <span className="text-black-500">
-                        {lead.new_applications +
-                          lead.sent_applications +
-                          lead.pending_applications}{" "}
-                        Applications
-                      </span>
-                    </div>
-                    <span className="text-orange-500">
-                      {"("}
-                      {lead.new_applications} New
-                    </span>
-                    ,{" "}
-                    <span className="text-blue-500">
-                      {lead.sent_applications} Sent
-                    </span>
-                    ,{" "}
-                    <span className="text-red-500">
-                      {lead.pending_applications} Pending{")"}
-                    </span>
+                    {countApplications(lead.tutors)}
                   </td>
-                  <td className="py-3 px-6 text-left">
+                  <td className="py-3 px-6 text-left" style={{ fontSize: "0.7rem" }}>
                     {lead.many_tutor_link}
                   </td>
 
-                  <td className="py-3 px-6 text-left">{lead.remarks}</td>
+                  <td className="py-3 px-6 text-left" style={{ fontSize: "0.7rem" }}>{lead.remarks}</td>
 
-                  <td className="py-3 px-6 text-left">
+                  <td className="py-3 px-6 text-left" style={{ fontSize: "0.7rem" }}>
                     {UTCtoSGT(lead.created_date)}
                   </td>
-                  <td className="py-3 px-6 text-left">
+                  <td className="py-3 px-6 text-left" style={{ fontSize: "0.7rem" }}>
                     {UTCtoSGT(lead.last_reviewed_date)}
                   </td>
 
@@ -320,16 +333,16 @@ const Leads = () => {
             <div className="bg-white p-6 flex flex-col items-start">
               <textarea
                 className="w-full h-80 p-2 text-sm text-gray-700"
-                value={displayLead.description}
+                value={displayedLead.description}
               ></textarea>
               <p className="text-gray-700 text-sm mb-2 ml-2">
-                Client Name: {displayLead.client_name}
+                Client Name: {displayedLead.client_name}
               </p>
               <p className="text-gray-700 text-sm mb-2 ml-2">
-                Client Phone: {displayLead.client_number}
+                Client Phone: {displayedLead.client_number}
               </p>
               <p className="text-gray-700 text-sm ml-2">
-                Internal Remarks: {displayLead.remarks}
+                Internal Remarks: {displayedLead.remarks}
               </p>
             </div>
             <table className="w-full mt-4 mb-4 text-sm">
@@ -386,7 +399,35 @@ const Leads = () => {
                 </tr>
               </thead>
               <tbody className="text-gray-600 text-sm font-light">
-                {/* Render rows dynamically here */}
+                {displayedLead.tutors.map((tutor) => (
+                  <tr
+                    key={tutor.id}
+                    className="border-b border-gray-200 hover:bg-gray-100"
+                  >
+                    <td className="py-3 px-6 text-left">
+                      {tutor.tutor.first_name} {tutor.tutor.last_name}
+                    </td>
+                    <td className="py-3 px-6 text-left" style={{ fontSize: "0.7rem" }}>{tutor.tutor.phone_number}</td>
+                    <td className="py-3 px-6 text-left" style={{ fontSize: "0.7rem" }}>{tutor.preferred_rate}</td>
+                    <td className="py-3 px-6 text-left" style={{ fontSize: "0.7rem" }}>{tutor.remarks}</td>
+                    <td className="py-3 px-6 text-left" style={{ fontSize: "0.7rem" }}>{tutor.timings}</td>
+                    <td className="py-3 px-6 text-left" style={{ fontSize: "0.7rem" }}>Occupation</td>
+                    <td className="py-3 px-6 text-left" style={{ fontSize: "0.7rem" }}>
+                      <select
+                        value={tutor.status}
+                        // onChange={(e) =>
+                        //   handleChangeStatus(lead.id, e.target.value)}
+                        className="border border-gray-300 rounded px-2 py-1"
+                      >
+                        <option value="new">New</option>
+                        <option value="sent_profile">Sent Profile</option>
+                        <option value="cmi">CMI</option>
+                        <option value="pending">Pending</option>
+                      </select>
+                    </td>
+                    <td className="py-3 px-6 text-left" style={{ fontSize: "0.7rem" }}>Profiles</td>
+                  </tr>
+                ))}
               </tbody>
             </table>
             <div className="flex justify-end">
