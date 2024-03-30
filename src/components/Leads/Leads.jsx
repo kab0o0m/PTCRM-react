@@ -112,9 +112,10 @@ const Leads = () => {
         <div className="">
           <span>{total} Applications</span>
         </div>
-        <span>{"("}{newCount} New,</span>
-        <span>{sent} Sent,</span>
-        <span>{pending} Pending{")"}</span>
+        <span className="text-orange-500">{"("}{newCount} New,</span>
+        <span className="text-blue-500">{" "} {sent} Sent,</span>
+        <br />
+        <span className="text-red-500">{" "} {pending} Pending{")"}</span>
       </div>
     );
   }
@@ -318,7 +319,7 @@ const Leads = () => {
 
       {isApplications && (
         <div className="fixed z-10 inset-0 overflow-y-auto bg-gray-800 bg-opacity-75 flex justify-center items-center">
-          <div className="bg-white w-full max-w-4xl p-6 rounded-lg">
+          <div className="bg-white w-full max-w-4xl p-6 rounded-lg" style={{ marginTop: '200px' }}>
             <div className="bg-white text-lg font-bold py-4 px-6 rounded-t-lg w-full flex justify-between items-center border-b-2">
               <h1 className="text-2xl font-bold ml-2">Applications</h1>
               <button
@@ -332,7 +333,7 @@ const Leads = () => {
             </div>
             <div className="bg-white p-6 flex flex-col items-start">
               <textarea
-                className="w-full h-80 p-2 text-sm text-gray-700"
+                className="w-full h-96 p-2 text-sm text-gray-700"
                 value={displayedLead.description}
               ></textarea>
               <p className="text-gray-700 text-sm mb-2 ml-2">
