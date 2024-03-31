@@ -8,6 +8,11 @@ const Navbar = () => {
         <div>
           <ul className="flex space-x-4">
             <li>
+              <a href="/homepage" className="text-white hover:text-gray-300">
+                Create Assignment
+              </a>
+            </li>
+            <li>
               <a href="/tutors" className="text-white hover:text-gray-300">
                 Tutors
               </a>
